@@ -1,0 +1,43 @@
+:root {
+  --textSize: 12px;
+}
+
+.message {
+  padding: 10px;
+  min-height: 100px;
+  background-color: pink;
+}
+.head {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: baseline;
+}
+.head h1 {
+  color: aqua;
+}
+.head p {
+  color: gray;
+}
+
+.input_area {
+  width: 100%;
+  position: absolute;
+  bottom: 5px;
+  background-color: rgb(73, 71, 132);
+  padding: 5px;
+  align-items: baseline;
+}
+.input_area textarea {
+  width: calc(90% - 70px);
+  font-size: var(--textSize);
+  margin: 3px auto;
+  padding: 6px;
+  resize: none;
+}
+.input_area textarea:focus::placeholder {
+  color: transparent;
+}
+.send_btn {
+  width: 70px;
+  display: block;
+}
