@@ -21,12 +21,11 @@ header {
 }
 .main_container {
   flex-basis: 70%;
-  position: relative;
   height: 100%;
 }
 
 .msg_container {
-  height: 100%;
+  height: calc(100% - 75px);
   overflow-y: scroll;
 }
 

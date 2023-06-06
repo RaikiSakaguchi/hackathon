@@ -16,13 +16,18 @@ import (
 )
 
 type MsgDataForHTTPGet struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+	Id       string `json:"id"`
+	EditorID string `json:"editorID"`
+	Date     string `json:"date"`
+	IsEdit   bool   `json:"isEdit"`
+	Content  int    `json:"content"`
 }
-type newData struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+type MsgDataForHTTPPost struct {
+	Id       string `json:"id"`
+	EditorID string `json:"editorID"`
+	Date     string `json:"date"`
+	IsEdit   bool   `json:"isEdit"`
+	Content  int    `json:"content"`
 }
 
 // ① GoプログラムからMySQLへ接続
@@ -55,6 +60,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
+		//メッセージデータを取得する
 		rows, err := db.Query("SELECT id, name, age FROM user")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
@@ -65,9 +71,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		users := make([]MsgDataForHTTPGet, 0)
 		for rows.Next() {
 			var u MsgDataForHTTPGet
-			if err := rows.Scan(&u.Id, &u.Name, &u.Age); err != nil {
+			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
-				if err := rows.Close(); err != nil { // 500を返して終了するが、その前にrowsのClose処理が必要
+				if err := rows.Close(); err != nil {
+					// 500を返して終了するが、その前にrowsのClose処理が必要
 					log.Printf("fail: rows.Close(), %v\n", err)
 				}
 				w.WriteHeader(http.StatusInternalServerError)
@@ -85,36 +92,36 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(bytes)
 	case http.MethodPost:
+		//メッセージを送る
 		decoder := json.NewDecoder(r.Body)
-		var newUser newData
-		if err := decoder.Decode(&newUser); err != nil {
+		var newMsg MsgDataForHTTPPost
+		if err := decoder.Decode(&newMsg); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		if newUser.Name == "" || len(newUser.Name) > 50 {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		if newUser.Age > 80 || newUser.Age < 20 {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+		//if newUser.Name == "" || len(newUser.Name) > 50 {
+		//	w.WriteHeader(http.StatusBadRequest)
+		//	return
+		//}
+		//if newUser.Age > 80 || newUser.Age < 20 {
+		//	w.WriteHeader(http.StatusInternalServerError)
+		//	return
+		//}
 		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
 		ms := ulid.Timestamp(time.Now())
-		_userId, _ := ulid.New(ms, entropy)
-		userId := _userId.String()
+		_msgId, _ := ulid.New(ms, entropy)
+		msgId := _msgId.String()
 		tx, err := db.Begin()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		_, err = tx.Exec("insert into user values (?, ?, ?);", userId, newUser.Name, newUser.Age)
+		_, err = tx.Exec("insert into user values (?, ?, ?, ?, ?);", msgId, newMsg.EditorID, newMsg.Date, newMsg.Content, newMsg.IsEdit)
 		if err != nil {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Printf("qui?")
 			fmt.Printf(err.Error())
-			fmt.Print(newUser)
+			fmt.Print(newMsg)
 			return
 		}
 		if err := tx.Commit(); err != nil {
@@ -122,9 +129,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		msg := "{id: " + userId + "}"
-		w.Write([]byte(msg))
-		//fmt.Printf("id: %s\n", userId)
 	default:
 		log.Printf("fail: HTTP Method is %s\n", r.Method)
 		w.WriteHeader(http.StatusBadRequest)
@@ -134,8 +138,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// ② /userでリクエストされたらnameパラメーターと一致する名前を持つレコードをJSON形式で返す
-	http.HandleFunc("/user", handler)
-	http.HandleFunc("/users", handler)
+	http.HandleFunc("/message", handler)
+	http.HandleFunc("/messages", handler)
 
 	// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 	closeDBWithSysCall()
