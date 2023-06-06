@@ -18,8 +18,9 @@ function InputArea(props: Props) {
     const hour = now.getHours();
     const minute = now.getMinutes();
     const formattedDate = `${year}/${month}/${day} ${hour}:${minute}`;
-
-    props.sendMessage(editorId, formattedDate, msgContent, isEdit);
+    if (msgContent != "") {
+      props.sendMessage(editorId, formattedDate, msgContent, isEdit);
+    }
     setContent("");
   }
   return (
