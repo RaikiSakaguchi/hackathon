@@ -60,7 +60,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodGet:
 		//メッセージデータを取得する
-		rows, err := db.Query("SELECT id, name, age FROM messages")
+		rows, err := db.Query("SELECT id, editor_id, created_at, content, is_edit FROM messages")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -70,7 +70,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		users := make([]MsgDataForHTTPGet, 0)
 		for rows.Next() {
 			var u MsgDataForHTTPGet
-			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content); err != nil {
+			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content, &u.IsEdit); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
 				if err := rows.Close(); err != nil {
 					// 500を返して終了するが、その前にrowsのClose処理が必要
