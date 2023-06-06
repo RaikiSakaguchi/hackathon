@@ -23,7 +23,6 @@ type MsgDataForHTTPGet struct {
 	Content  int    `json:"content"`
 }
 type MsgDataForHTTPPost struct {
-	Id       string `json:"id"`
 	EditorID string `json:"editorID"`
 	Date     string `json:"date"`
 	IsEdit   bool   `json:"isEdit"`
@@ -96,7 +95,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		var newMsg MsgDataForHTTPPost
 		if err := decoder.Decode(&newMsg); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Errorf(err.Error())
 			return
 		}
 		//if newUser.Name == "" || len(newUser.Name) > 50 {
@@ -113,6 +113,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		msgId := _msgId.String()
 		tx, err := db.Begin()
 		if err != nil {
+			fmt.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -126,6 +127,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		if err := tx.Commit(); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Errorf(err.Error())
 			return
 		}
 		w.WriteHeader(http.StatusOK)
