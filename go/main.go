@@ -51,8 +51,8 @@ func init() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Headers", "https://hackathon2-5xie62mgea-uc.a.run.app")
-	w.Header().Set("Access-Control-Allow-Origin", "https://hackathon2-5xie62mgea-uc.a.run.app")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
