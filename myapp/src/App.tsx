@@ -78,7 +78,7 @@ function App() {
             <Messages/>
             <Messages/>
           </div>
-          <InputArea onSubmit={sendMessage}/>
+          {/* <InputArea/> */}
         </div>
       </div>
     </div>
