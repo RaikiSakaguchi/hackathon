@@ -10,7 +10,6 @@ function InputArea(props: Props) {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const send = (event : React.FormEvent<HTMLElement>) => {
     event.preventDefault();
-    // const time = new Date().toLocaleDateString();
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
@@ -23,9 +22,20 @@ function InputArea(props: Props) {
     }
     setContent("");
   }
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      send(event);
+    }
+  }
   return (
     <form className="input_area" onSubmit={send}>
-      <textarea placeholder='メッセージを入力' rows={3} name="message" value={msgContent} onChange={(e) => setContent(e.target.value)}></textarea>
+      <textarea
+        placeholder='メッセージを入力'
+        rows={3}
+        name="message"
+        value={msgContent}
+        onChange={(e) => setContent(e.target.value)}
+        onKeyDown={handleKeyDown}></textarea>
       <button className='send_btn' type="submit"/>
     </form>
   )
