@@ -16,7 +16,7 @@ function InputArea(props: Props) {
   return (
     <form className="input_area" onSubmit={send}>
       <textarea placeholder='メッセージを入力' rows={3} name="message" value={msgContent} onChange={(e) => setContent(e.target.value)}></textarea>
-      <input className='send_btn' type="submit"/>
+      <button className='send_btn' type="submit"/>
     </form>
   )
 }

@@ -61,7 +61,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodGet:
 		//メッセージデータを取得する
-		rows, err := db.Query("SELECT id, name, age FROM user")
+		rows, err := db.Query("SELECT id, name, age FROM messages")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -116,7 +116,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		_, err = tx.Exec("insert into user values (?, ?, ?, ?, ?);", msgId, newMsg.EditorID, newMsg.Date, newMsg.Content, newMsg.IsEdit)
+		_, err = tx.Exec("insert into messages values (?, ?, ?, ?, ?);", msgId, newMsg.EditorID, newMsg.Date, newMsg.Content, newMsg.IsEdit)
 		if err != nil {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)

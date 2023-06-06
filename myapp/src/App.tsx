@@ -15,11 +15,11 @@ type Msg = {
 }
 
 function App() {
+  const [messageData, setMessage] = useState<Msg[]>();
   const fetchMessages = async () => {
-    const [messageData, setMessage] = useState<Msg[]>();
     try {
       const res = await fetch(
-        "http://localhost:8080/messages",
+        "https://hackathon2-5xie62mgea-uc.a.run.app/messages",
         {
           method: "GET"
         },
@@ -36,7 +36,7 @@ function App() {
   const sendMessage = async (editorId: string, date: string, content: string, isEdit: boolean) => {
     try {
       const formInfo = await fetch(
-        "http://localhost:8080/message",
+        "https://hackathon2-5xie62mgea-uc.a.run.app/message",
         {
           method: "POST",
           body: JSON.stringify({
@@ -78,7 +78,7 @@ function App() {
             <Messages/>
             <Messages/>
           </div>
-          {/* <InputArea/> */}
+          <InputArea sendMessage={sendMessage}/>
         </div>
       </div>
     </div>
