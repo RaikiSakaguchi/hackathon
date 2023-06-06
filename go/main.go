@@ -20,13 +20,13 @@ type MsgDataForHTTPGet struct {
 	EditorID string `json:"editorID"`
 	Date     string `json:"date"`
 	IsEdit   bool   `json:"isEdit"`
-	Content  int    `json:"content"`
+	Content  string `json:"content"`
 }
 type MsgDataForHTTPPost struct {
 	EditorID string `json:"editorID"`
 	Date     string `json:"date"`
 	IsEdit   bool   `json:"isEdit"`
-	Content  int    `json:"content"`
+	Content  string `json:"content"`
 }
 
 // ① GoプログラムからMySQLへ接続
