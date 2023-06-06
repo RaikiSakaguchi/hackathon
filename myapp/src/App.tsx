@@ -34,6 +34,7 @@ function App() {
     }
   }
   const sendMessage = async (editorId: string, date: string, content: string, isEdit: boolean) => {
+    console.log(content)
     try {
       const formInfo = await fetch(
         "https://hackathon2-5xie62mgea-uc.a.run.app/message",

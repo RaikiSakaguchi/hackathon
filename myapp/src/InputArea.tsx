@@ -6,12 +6,13 @@ type Props = {
 
 function InputArea(props: Props) {
   const [msgContent, setContent] = useState<string>("");
-  const [editorId, setEditorId] = useState<string>("")
-  const [isEdit, setIsEdit] = useState<boolean>(false)
+  const [editorId, setEditorId] = useState<string>("");
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const send = (event : React.FormEvent<HTMLElement>) => {
     event.preventDefault();
     const time = new Date().toLocaleDateString();
     props.sendMessage(editorId, time, msgContent, isEdit);
+    setContent("");
   }
   return (
     <form className="input_area" onSubmit={send}>
