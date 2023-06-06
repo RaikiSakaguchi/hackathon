@@ -1,14 +1,20 @@
 import React from "react";
 
-function Messages() {
+type Props = {
+  name: string
+  date: string
+  content: string
+}
+
+function Messages(props: Props) {
   return(
     <div className="message">
       <div className="head">
-        <h1>My name is Taro</h1>
-        <p>sent in 25:43</p>
+        <h1>{props.name}</h1>
+        <p>{props.date}</p>
       </div>
       <div className="text">
-        <p>This is an example text. This is an example text. This is an example text. This is an example text. This is an example text. This is an example text. This is an example text. This is an example text. This is an example text. This is an example text. </p>
+        <p>{props.content}</p>
       </div>
     </div>
   )

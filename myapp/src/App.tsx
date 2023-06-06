@@ -68,16 +68,9 @@ function App() {
         </div>
         <div className="main_container">
           <div className="msg_container">
-            <Messages/>
-            <Messages/>
-            <Messages/>
-            <Messages/>
-            <Messages/>
-            <Messages/>
-            <Messages/>
-            <Messages/>
-            <Messages/>
-            <Messages/>
+            {messageData?.map((m_data: Msg) => (
+              <Messages name={m_data.editorID} date={m_data.date} content={m_data.content}/>
+            ))}
           </div>
           <InputArea sendMessage={sendMessage}/>
         </div>

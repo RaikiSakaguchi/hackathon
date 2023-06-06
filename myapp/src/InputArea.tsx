@@ -10,8 +10,16 @@ function InputArea(props: Props) {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const send = (event : React.FormEvent<HTMLElement>) => {
     event.preventDefault();
-    const time = new Date().toLocaleDateString();
-    props.sendMessage(editorId, time, msgContent, isEdit);
+    // const time = new Date().toLocaleDateString();
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    const formattedDate = `${year}/${month}/${day} ${hour}:${minute}`;
+
+    props.sendMessage(editorId, formattedDate, msgContent, isEdit);
     setContent("");
   }
   return (
