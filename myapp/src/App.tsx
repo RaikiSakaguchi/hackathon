@@ -17,7 +17,19 @@ type Msg = {
 function App() {
   const [messageData, setMessage] = useState<Msg[]>();
   useEffect(() => {
-    fetchMessages()},[])
+    fetchMessages();},[])
+  const scrollToEnd = () => {
+    const chatArea = document.getElementById("chat_area")
+    chatArea?.scrollTo(0, chatArea?.scrollHeight);
+  }
+  var observer = new MutationObserver(()=>{scrollToEnd()})
+  const chat = document.getElementById("chat_area")
+  const config = {
+    childList: true,
+  }
+  if (chat != null) {
+    observer.observe(chat, config);
+  }
   const fetchMessages = async () => {
     try {
       const res = await fetch(
@@ -69,7 +81,7 @@ function App() {
           <p>hello from side bar</p>
         </div>
         <div className="main_container">
-          <div className="msg_container">
+          <div id='chat_area' className="msg_container">
             {messageData?.map((m_data: Msg) => (
               <Messages
                 key={m_data.id}
