@@ -20,14 +20,13 @@ type MsgDataForHTTPGet struct {
 	EditorID string `json:"editorID"`
 	Date     string `json:"date"`
 	IsEdit   bool   `json:"isEdit"`
-	Content  int    `json:"content"`
+	Content  string `json:"content"`
 }
 type MsgDataForHTTPPost struct {
-	Id       string `json:"id"`
 	EditorID string `json:"editorID"`
 	Date     string `json:"date"`
 	IsEdit   bool   `json:"isEdit"`
-	Content  int    `json:"content"`
+	Content  string `json:"content"`
 }
 
 // ① GoプログラムからMySQLへ接続
@@ -51,8 +50,8 @@ func init() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Headers", "http://localhost:3000")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
@@ -61,7 +60,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodGet:
 		//メッセージデータを取得する
-		rows, err := db.Query("SELECT id, name, age FROM user")
+		rows, err := db.Query("SELECT id, editor_id, created_at, content, is_edit FROM messages")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -71,7 +70,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		users := make([]MsgDataForHTTPGet, 0)
 		for rows.Next() {
 			var u MsgDataForHTTPGet
-			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content); err != nil {
+			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content, &u.IsEdit); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
 				if err := rows.Close(); err != nil {
 					// 500を返して終了するが、その前にrowsのClose処理が必要
@@ -96,7 +95,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		decoder := json.NewDecoder(r.Body)
 		var newMsg MsgDataForHTTPPost
 		if err := decoder.Decode(&newMsg); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Errorf(err.Error())
 			return
 		}
 		//if newUser.Name == "" || len(newUser.Name) > 50 {
@@ -113,10 +113,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		msgId := _msgId.String()
 		tx, err := db.Begin()
 		if err != nil {
+			fmt.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		_, err = tx.Exec("insert into user values (?, ?, ?, ?, ?);", msgId, newMsg.EditorID, newMsg.Date, newMsg.Content, newMsg.IsEdit)
+		_, err = tx.Exec("insert into messages values (?, ?, ?, ?, ?);", msgId, newMsg.EditorID, newMsg.Date, newMsg.Content, newMsg.IsEdit)
 		if err != nil {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)
@@ -126,6 +127,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		if err := tx.Commit(); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Errorf(err.Error())
 			return
 		}
 		w.WriteHeader(http.StatusOK)
