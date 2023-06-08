@@ -66,8 +66,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-
-		users := make([]MsgDataForHTTPGet, 0)
+		//rowでとってきたデータをmsgsに格納する
+		msgs := make([]MsgDataForHTTPGet, 0)
 		for rows.Next() {
 			var u MsgDataForHTTPGet
 			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content, &u.IsEdit); err != nil {
@@ -79,10 +79,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			users = append(users, u)
+			msgs = append(msgs, u)
 		}
-
-		bytes, err := json.Marshal(users)
+		//msgsの内容をjsonに変換する
+		bytes, err := json.Marshal(msgs)
 		if err != nil {
 			log.Printf("fail: json.Marshal, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -97,6 +97,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if err := decoder.Decode(&newMsg); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Errorf(err.Error())
+			return
+		}
+		if newMsg.Content == "" {
 			return
 		}
 		//if newUser.Name == "" || len(newUser.Name) > 50 {
