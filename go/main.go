@@ -32,6 +32,9 @@ type MsgDataForEdit struct {
 	Id      string `json:"id"`
 	Content string `json:"content"`
 }
+type Content struct {
+	Text string
+}
 
 var db *sql.DB
 
@@ -62,21 +65,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
-		//メッセージデータを取得する
+		//全メッセージを取得する
 		rows, err := db.Query("SELECT id, editor_id, created_at, content, is_edit FROM messages")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		//rowでとってきたデータをmsgsに格納する
 		msgs := make([]MsgDataForHTTPGet, 0)
 		for rows.Next() {
 			var u MsgDataForHTTPGet
 			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content, &u.IsEdit); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
 				if err := rows.Close(); err != nil {
-					// 500を返して終了するが、その前にrowsのClose処理が必要
 					log.Printf("fail: rows.Close(), %v\n", err)
 				}
 				w.WriteHeader(http.StatusInternalServerError)
@@ -157,13 +158,26 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 		if editMsg.Content == "" {
 			return
 		}
+		rows, err := db.Query("SELECT content FROM messages WHERE id=?", editMsg.Id)
+		if err != nil {
+			log.Printf("fail: db.Query, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		var nowContent Content
+		err = rows.Scan(&nowContent.Text)
+		if err != nil {
+			return
+		}
+		if nowContent.Text == editMsg.Content {
+			return
+		}
 		tx, err := db.Begin()
 		if err != nil {
 			fmt.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		fmt.Printf(editMsg.Content)
 		_, err = tx.Exec("UPDATE messages SET content = ?, is_edit = true WHERE id = ?;", editMsg.Content, editMsg.Id)
 		if err != nil {
 			tx.Rollback()

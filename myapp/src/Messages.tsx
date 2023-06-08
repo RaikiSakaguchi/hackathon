@@ -5,7 +5,7 @@ import { StringifyOptions } from "querystring";
 
 type Props = {
   setIsEditing: (id: string, content: string) => void
-  key: string
+  id: string
   name: string
   date: string
   content: string
@@ -14,14 +14,14 @@ type Props = {
 
 function Messages(props: Props) {
   const isEditing = () => {
-    props.setIsEditing(props.key, props.content);
+    props.setIsEditing(props.id, props.content);
   }
   return(
     <div className="message">
       <div className="msg_head">
         <h1 className="senderName">{props.name}</h1>
         <p className="date">{props.date}</p>
-        <img className="edit_icon" src={pen} alt="編集" title="メッセージを編集" onClick={isEditing}/>
+        <img className="edit_icon btn" src={pen} alt="編集" title="メッセージを編集" onClick={isEditing}/>
       </div>
       <div className="text">
         <p>{props.content}</p>
