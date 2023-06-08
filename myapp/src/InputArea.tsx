@@ -37,7 +37,7 @@ function InputArea(props: Props) {
         value={msgContent}
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}></textarea>
-      <button className='send_btn' type="submit">
+      <button title="送信" className='send_btn' type="submit">
         <img src={send_icon} className="send_icon" alt="send" />
       </button>
     </form>

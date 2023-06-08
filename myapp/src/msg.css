@@ -2,7 +2,7 @@
   --textSize: 14px;
   --dark : #292e39;
   --orange : #ff8c00;
-  --red : #be0909ce;
+  --red : #d7241b;
   --green: #329600;
   --blue: #1e68b2;
   --yellow: #ffffbf;
@@ -45,6 +45,7 @@
   background-color: var(--gray);
   color: var(--yellow);
   border-color: none;
+  border-radius: 10px;
   padding: 6px;
   resize: none;
   margin-right: 5px;
@@ -54,9 +55,9 @@
   opacity: 0.5;
 }
 .input_area textarea:focus {
-  border-color: var(--green);
+  border-color: var(--blue);
   border-width: medium;
-  border-radius: 2px;
+  border-radius: 8px;
   outline: none;
 }
 .input_area textarea:focus::placeholder {
@@ -67,8 +68,10 @@
   flex-basis: 70px;
   border: none;
   background-color: var(--orange);
+  border-radius: 20px;
+  transition: 0.2s;
 }
-.send_btn:active {
+.send_btn:hover {
   background-color: var(--red);
 }
 
