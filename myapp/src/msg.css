@@ -2,7 +2,7 @@
   --textSize: 14px;
   --dark : #292e39;
   --orange : #ff8c00;
-  --red : #be0909ce;
+  --red : #f30;
   --green: #329600;
   --blue: #1e68b2;
   --yellow: #ffffbf;
@@ -26,6 +26,15 @@
 .date {
   color: var(--green);
   font-size: calc(var(--textSize) - 2px);
+}
+.edit_icon {
+  height: calc(var(--textSize) + 3px);
+}
+.message .text {
+  margin: 0 auto;
+  width: 80%;
+  border-bottom: var(--blue) 1px dotted;
+  padding-bottom: 5px;
 }
 
 .input_area {

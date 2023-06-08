@@ -2,7 +2,7 @@
   --textSize: 14px;
   --dark : #292e39;
   --orange : #ff8c00;
-  --red : #be0909ce;
+  --red : #ff3300;
   --green: #329600;
   --blue: #1e68b2;
   --yellow: #ffffbf;
@@ -32,7 +32,6 @@ header {
   background-color: var(--midnight);
   flex-shrink: 0;
   flex-basis: 250px;
-  border-right: var(--red) 1.5px solid;
 }
 .main_container {
   flex-basis: 70%;

@@ -14,7 +14,7 @@ function Messages(props: Props) {
       <div className="head">
         <h1 className="senderName">{props.name}</h1>
         <p className="date">{props.date}</p>
-        <img src={pen} alt="編集" title="メッセージを編集"/>
+        <img className="edit_icon" src={pen} alt="編集" title="メッセージを編集"/>
       </div>
       <div className="text">
         <p>{props.content}</p>
