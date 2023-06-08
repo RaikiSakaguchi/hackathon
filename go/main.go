@@ -33,7 +33,6 @@ type MsgDataForEdit struct {
 	Content string `json:"content"`
 }
 
-// ① GoプログラムからMySQLへ接続
 var db *sql.DB
 
 func init() {
@@ -187,20 +186,15 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// ② /userでリクエストされたらnameパラメーターと一致する名前を持つレコードをJSON形式で返す
 	http.HandleFunc("/message", handler)
 	http.HandleFunc("/edit", editHandler)
-
-	// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 	closeDBWithSysCall()
-
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
 }
 
-// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 func closeDBWithSysCall() {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
