@@ -16,6 +16,7 @@ type Msg = {
 
 function App() {
   const [messageData, setMessage] = useState<Msg[]>();
+  const [isEditing, setIsEdit] = useState<boolean>(false);
   useEffect(() => {
     fetchMessages();},[])
   const scrollToEnd = () => {
@@ -87,7 +88,8 @@ function App() {
                 key={m_data.id}
                 name={m_data.editorID}
                 date={m_data.date}
-                content={m_data.content}/>
+                content={m_data.content}
+                isEdit={m_data.isEdit}/>
               ))}
           </div>
           <InputArea sendMessage={sendMessage}/>
