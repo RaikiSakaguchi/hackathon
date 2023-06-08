@@ -4,7 +4,7 @@ import './App.css';
 import './msg.css'
 import Messages from './Messages';
 import InputArea from './InputArea';
-import { LoginForm } from './LoginForm';
+// import { LoginForm } from './LoginForm';
 
 type Msg = {
   id : string
