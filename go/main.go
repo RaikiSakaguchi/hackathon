@@ -28,6 +28,10 @@ type MsgDataForHTTPPost struct {
 	IsEdit   bool   `json:"isEdit"`
 	Content  string `json:"content"`
 }
+type MsgDataForEdit struct {
+	Id      string `json:"id"`
+	Content string `json:"content"`
+}
 
 // ① GoプログラムからMySQLへ接続
 var db *sql.DB
@@ -66,8 +70,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-
-		users := make([]MsgDataForHTTPGet, 0)
+		//rowでとってきたデータをmsgsに格納する
+		msgs := make([]MsgDataForHTTPGet, 0)
 		for rows.Next() {
 			var u MsgDataForHTTPGet
 			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content, &u.IsEdit); err != nil {
@@ -79,10 +83,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			users = append(users, u)
+			msgs = append(msgs, u)
 		}
-
-		bytes, err := json.Marshal(users)
+		//msgsの内容をjsonに変換する
+		bytes, err := json.Marshal(msgs)
 		if err != nil {
 			log.Printf("fail: json.Marshal, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -99,14 +103,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
-		//if newUser.Name == "" || len(newUser.Name) > 50 {
-		//	w.WriteHeader(http.StatusBadRequest)
-		//	return
-		//}
-		//if newUser.Age > 80 || newUser.Age < 20 {
-		//	w.WriteHeader(http.StatusInternalServerError)
-		//	return
-		//}
+		if newMsg.Content == "" {
+			return
+		}
 		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
 		ms := ulid.Timestamp(time.Now())
 		_msgId, _ := ulid.New(ms, entropy)
@@ -138,10 +137,58 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func editHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Content-Type", "application/json")
+	switch r.Method {
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
+		return
+	case http.MethodPost:
+		//編集したメッセージを格納する
+		decoder := json.NewDecoder(r.Body)
+		var newMsg MsgDataForEdit
+		if err := decoder.Decode(&newMsg); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Errorf(err.Error())
+			return
+		}
+		if newMsg.Content == "" {
+			return
+		}
+		tx, err := db.Begin()
+		if err != nil {
+			fmt.Errorf(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		_, err = tx.Exec("UPDATE messages SET content = ?, is_edit = true WHERE id = ?;", newMsg.Content, newMsg.Id)
+		if err != nil {
+			tx.Rollback()
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Printf(err.Error())
+			fmt.Print(newMsg)
+			return
+		}
+		if err := tx.Commit(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Errorf(err.Error())
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	default:
+		log.Printf("fail: HTTP Method is %s\n", r.Method)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
+
 func main() {
 	// ② /userでリクエストされたらnameパラメーターと一致する名前を持つレコードをJSON形式で返す
 	http.HandleFunc("/message", handler)
-	http.HandleFunc("/messages", handler)
+	http.HandleFunc("/edit", editHandler)
 
 	// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 	closeDBWithSysCall()

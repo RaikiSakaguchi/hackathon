@@ -15,7 +15,7 @@
   color: var(--yellow);
   font-size: var(--textSize);
 }
-.head {
+.msg_head {
   display: flex;
   justify-content: space-evenly;
   align-items: baseline;
@@ -25,6 +25,20 @@
 }
 .date {
   color: var(--green);
+  font-size: calc(var(--textSize) - 2px);
+}
+.edit_icon {
+  height: calc(var(--textSize) + 3px);
+}
+.message .text {
+  margin: 0 auto;
+  width: 80%;
+  border-bottom: var(--blue) 1px dotted;
+  padding-bottom: 5px;
+}
+.is_edit {
+  color: var(--yellow);
+  opacity: 0.5;
   font-size: calc(var(--textSize) - 2px);
 }
 
