@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import send_icon from "./images/send.svg"
 
 type Props = {
   sendMessage: (editorId: string, date: string, content: string, isEdit: boolean) => void;
@@ -36,7 +37,9 @@ function InputArea(props: Props) {
         value={msgContent}
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}></textarea>
-      <button className='send_btn' type="submit"/>
+      <button className='send_btn' type="submit">
+        <img src={send_icon} className="send_icon" alt="send" />
+      </button>
     </form>
   )
 }

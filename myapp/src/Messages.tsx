@@ -10,8 +10,8 @@ function Messages(props: Props) {
   return(
     <div className="message">
       <div className="head">
-        <h1>{props.name}</h1>
-        <p>{props.date}</p>
+        <h1 className="senderName">{props.name}</h1>
+        <p className="date">{props.date}</p>
       </div>
       <div className="text">
         <p>{props.content}</p>

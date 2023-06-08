@@ -1,10 +1,24 @@
+:root {
+  --textSize: 14px;
+  --dark : #292e39;
+  --orange : #ff8c00;
+  --red : #be0909ce;
+  --green: #329600;
+  --blue: #1e68b2;
+  --yellow: #ffffbf;
+  --midnight : #061031ce;
+  --gray: #6a7d8a;
+}
+
 .App {
   text-align: center;
 }
 
 header {
-  background-color: blue;
+  background-color: black;
   height: 70px;
+  color: var(--yellow);
+  font-weight: bolder;
 }
 
 .contents {
@@ -15,9 +29,10 @@ header {
   margin: 0 auto;
 }
 .side_container {
-  background-color: yellow;
+  background-color: var(--midnight);
   flex-shrink: 0;
   flex-basis: 250px;
+  border-right: var(--red) 1.5px solid;
 }
 .main_container {
   flex-basis: 70%;
