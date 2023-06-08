@@ -1,9 +1,17 @@
+:root {
+  --orange : #ff8c00;
+  --red : #e50000;
+  --green: #329600;
+  --blue: #1e68b2;
+  --yellow: #f4f475;
+}
+
 .App {
   text-align: center;
 }
 
 header {
-  background-color: blue;
+  background-color: #003D7A;
   height: 70px;
 }
 

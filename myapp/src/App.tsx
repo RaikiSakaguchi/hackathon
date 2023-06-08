@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './reset.css';
 import './App.css';
 import './msg.css'
 import Messages from './Messages';
 import InputArea from './InputArea';
+import { LoginForm } from './LoginForm';
 
 type Msg = {
   id : string
@@ -48,7 +48,6 @@ function App() {
       }
     }
     const sendMessage = async (editorId: string, date: string, content: string, isEdit: boolean) => {
-      console.log(content)
       try {
         const formInfo = await fetch(
           "https://hackathon2-5xie62mgea-uc.a.run.app/message",
@@ -74,6 +73,7 @@ function App() {
         <div className="App">
       <header>
         <h1>This is HEADER!!!</h1>
+        {/* <LoginForm/> */}
       </header>
       <div className="contents">
         <div className="side_container">
