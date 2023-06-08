@@ -188,7 +188,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// ② /userでリクエストされたらnameパラメーターと一致する名前を持つレコードをJSON形式で返す
 	http.HandleFunc("/message", handler)
-	http.HandleFunc("/edit", handler)
+	http.HandleFunc("/edit", editHandler)
 
 	// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 	closeDBWithSysCall()
