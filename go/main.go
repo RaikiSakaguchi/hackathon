@@ -140,7 +140,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func editHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case http.MethodOptions:
@@ -149,13 +149,13 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		//編集したメッセージを格納する
 		decoder := json.NewDecoder(r.Body)
-		var newMsg MsgDataForEdit
-		if err := decoder.Decode(&newMsg); err != nil {
+		var editMsg MsgDataForEdit
+		if err := decoder.Decode(&editMsg); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Errorf(err.Error())
 			return
 		}
-		if newMsg.Content == "" {
+		if editMsg.Content == "" {
 			return
 		}
 		tx, err := db.Begin()
@@ -164,12 +164,13 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		_, err = tx.Exec("UPDATE messages SET content = ?, is_edit = true WHERE id = ?;", newMsg.Content, newMsg.Id)
+		fmt.Printf(editMsg.Content)
+		_, err = tx.Exec("UPDATE messages SET content = ?, is_edit = true WHERE id = ?;", editMsg.Content, editMsg.Id)
 		if err != nil {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Printf(err.Error())
-			fmt.Print(newMsg)
+			fmt.Print(editMsg)
 			return
 		}
 		if err := tx.Commit(); err != nil {
