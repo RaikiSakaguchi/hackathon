@@ -1,11 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
+import "./editMsg.css"
 
-function EditMessage() {
+type Props = {
+  editMessage: (id: string, content: string) => void;
+  id: string
+  content: string
+}
+
+function EditMessage(props: Props) {
+  const [msgContent, setContent] = useState<string>(props.content);
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      send(event);
+    }
+  }
+  const send = (event : React.FormEvent<HTMLElement>) => {
+    event.preventDefault();
+    if (msgContent != "") {
+      props.editMessage(props.id, msgContent);
+    }
+    setContent("");
+  }
   return(
     <div>
-      <div className="head">
-        
+      <div className="edit_head">
+        <p>×</p>
       </div>
+      <form>
+      <textarea
+        placeholder='メッセージを入力'
+        rows={3}
+        name="message"
+        value={msgContent}
+        onChange={(e) => setContent(e.target.value)}
+        onKeyDown={handleKeyDown}></textarea>
+      </form>
     </div>
   )
 }

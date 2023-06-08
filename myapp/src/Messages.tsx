@@ -11,7 +11,7 @@ type Props = {
 function Messages(props: Props) {
   return(
     <div className="message">
-      <div className="head">
+      <div className="msg_head">
         <h1 className="senderName">{props.name}</h1>
         <p className="date">{props.date}</p>
         <img className="edit_icon" src={pen} alt="編集" title="メッセージを編集"/>

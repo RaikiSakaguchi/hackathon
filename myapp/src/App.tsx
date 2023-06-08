@@ -34,7 +34,7 @@ function App() {
   const fetchMessages = async () => {
     try {
       const res = await fetch(
-        "https://hackathon2-5xie62mgea-uc.a.run.app/messages",
+        "https://hackathon2-5xie62mgea-uc.a.run.app/message",
         {
           method: "GET"
         },
@@ -64,6 +64,26 @@ function App() {
           );
           if (!formInfo.ok) {
             throw Error(`Failed to create user: ${formInfo.status}`);
+          }
+          fetchMessages();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+      const editMessage = async (id: string, content: string) => {
+        try {
+          const editedMsg = await fetch(
+          "https://hackathon2-5xie62mgea-uc.a.run.app/edit",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              id : id,
+              content : content
+            }),
+          }
+          );
+          if (!editedMsg.ok) {
+            throw Error(`Failed to edit message: ${editedMsg.status}`);
           }
           fetchMessages();
         } catch (err) {
