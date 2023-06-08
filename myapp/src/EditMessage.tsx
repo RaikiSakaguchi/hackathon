@@ -3,8 +3,8 @@ import "./editMsg.css"
 
 type Props = {
   editMessage: (id: string, content: string) => void;
-  id: string
   content: string
+  id: string
 }
 
 function EditMessage(props: Props) {
@@ -22,7 +22,7 @@ function EditMessage(props: Props) {
     setContent("");
   }
   return(
-    <div>
+    <div className="message_editor">
       <div className="edit_head">
         <p>×</p>
       </div>
@@ -34,6 +34,7 @@ function EditMessage(props: Props) {
         value={msgContent}
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}></textarea>
+      <button title="編集完了" type="submit">編集完了</button>
       </form>
     </div>
   )

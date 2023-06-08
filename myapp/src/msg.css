@@ -36,6 +36,11 @@
   border-bottom: var(--blue) 1px dotted;
   padding-bottom: 5px;
 }
+.is_edit {
+  color: var(--yellow);
+  opacity: 0.5;
+  font-size: calc(var(--textSize) - 2px);
+}
 
 .input_area {
   width: 100%;

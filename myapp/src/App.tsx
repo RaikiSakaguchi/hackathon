@@ -4,6 +4,7 @@ import './App.css';
 import './msg.css'
 import Messages from './Messages';
 import InputArea from './InputArea';
+import EditMessage from './EditMessage';
 // import { LoginForm } from './LoginForm';
 
 type Msg = {
@@ -15,8 +16,10 @@ type Msg = {
 }
 
 function App() {
-  const [messageData, setMessage] = useState<Msg[]>();
   const [isEditing, setIsEdit] = useState<boolean>(false);
+  const [messageData, setMessage] = useState<Msg[]>();
+  const [editingMsgId, setEditMsgId] = useState<string>("");
+  const [editingMsgContent, setContent] = useState<string>("");
   useEffect(() => {
     fetchMessages();},[])
   const scrollToEnd = () => {
@@ -30,6 +33,11 @@ function App() {
   }
   if (chat != null) {
     observer.observe(chat, config);
+  }
+  const handleIsEdit = (id: string, content: string) => {
+    setIsEdit(true);
+    setEditMsgId(id);
+    setContent(content);
   }
   const fetchMessages = async () => {
     try {
@@ -70,52 +78,55 @@ function App() {
           console.error(err);
         }
       }
-      const editMessage = async (id: string, content: string) => {
-        try {
-          const editedMsg = await fetch(
-          "https://hackathon2-5xie62mgea-uc.a.run.app/edit",
-          {
-            method: "POST",
-            body: JSON.stringify({
-              id : id,
-              content : content
-            }),
-          }
-          );
-          if (!editedMsg.ok) {
-            throw Error(`Failed to edit message: ${editedMsg.status}`);
-          }
-          fetchMessages();
-        } catch (err) {
-          console.error(err);
+    const editMessage = async (id: string, content: string) => {
+      try {
+        const editedMsg = await fetch(
+        "https://hackathon2-5xie62mgea-uc.a.run.app/edit",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            id : id,
+            content : content
+          }),
         }
+        );
+        if (!editedMsg.ok) {
+          throw Error(`Failed to edit message: ${editedMsg.status}`);
+        }
+        fetchMessages();
+      } catch (err) {
+        console.error(err);
       }
-      return (
-        <div className="App">
-      <header>
-        <h1>This is HEADER!!!</h1>
-        {/* <LoginForm/> */}
-      </header>
-      <div className="contents">
-        <div className="side_container">
-          <p>hello from side bar</p>
-          <p>hello from side bar</p>
+    }
+
+    return (
+      <div className="App">
+    <header>
+      <h1>This is HEADER!!!</h1>
+      {/* <LoginForm/> */}
+    </header>
+    <div className="contents">
+      <div className="side_container">
+        <p>hello from side bar</p>
+        <p>hello from side bar</p>
+      </div>
+      <div className="main_container">
+        <div id='chat_area' className="msg_container">
+          {messageData?.map((m_data: Msg) => (
+            <Messages
+              setIsEditing={handleIsEdit}
+              key={m_data.id}
+              name={m_data.editorID}
+              date={m_data.date}
+              content={m_data.content}
+              isEdit={m_data.isEdit}/>
+            ))}
         </div>
-        <div className="main_container">
-          <div id='chat_area' className="msg_container">
-            {messageData?.map((m_data: Msg) => (
-              <Messages
-                key={m_data.id}
-                name={m_data.editorID}
-                date={m_data.date}
-                content={m_data.content}
-                isEdit={m_data.isEdit}/>
-              ))}
-          </div>
-          <InputArea sendMessage={sendMessage}/>
-        </div>
+        <InputArea sendMessage={sendMessage}/>
       </div>
     </div>
+    <EditMessage editMessage={editMessage} content={editingMsgContent} id={editingMsgId}/>
+  </div>
   );
 }
 
