@@ -1,38 +1,63 @@
 :root {
-  --textSize: 12px;
+  --textSize: 14px;
+  --dark : #292e39;
+  --orange : #ff8c00;
+  --red : #be0909ce;
+  --green: #329600;
+  --blue: #1e68b2;
+  --yellow: #ffffbf;
+  --gray: #6a7d8a;
 }
 
 .message {
   padding: 10px;
-  min-height: 100px;
-  background-color: pink;
+  background-color: var(--dark);
+  color: var(--yellow);
+  font-size: var(--textSize);
 }
 .head {
   display: flex;
   justify-content: space-evenly;
   align-items: baseline;
 }
-.head h1 {
+.senderName {
   color: aqua;
 }
-.head p {
-  color: gray;
+.date {
+  color: var(--green);
+  font-size: calc(var(--textSize) - 2px);
 }
 
 .input_area {
   width: 100%;
   height: 75px;
-  background-color: rgb(73, 71, 132);
+  background-color: black;
   padding: 5px;
   display: flex;
+  align-items: stretch;
   justify-content: center;
   box-sizing: border-box;
 }
 .input_area textarea {
+  box-sizing: border-box;
   width: calc(90% - 70px);
-  font-size: var(--textSize);
+  font-size: calc(var(--textSize)-1);
+  background-color: var(--gray);
+  color: var(--yellow);
+  border-color: none;
   padding: 6px;
   resize: none;
+  margin-right: 5px;
+}
+.input_area textarea::placeholder {
+  color: var(--yellow);
+  opacity: 0.5;
+}
+.input_area textarea:focus {
+  border-color: var(--green);
+  border-width: medium;
+  border-radius: 2px;
+  outline: none;
 }
 .input_area textarea:focus::placeholder {
   color: transparent;
@@ -40,5 +65,14 @@
 .send_btn {
   display: block;
   flex-basis: 70px;
-  height: calc(var(--textSize)*3);
+  border: none;
+  background-color: var(--orange);
+}
+.send_btn:active {
+  background-color: var(--red);
+}
+
+.send_icon {
+  margin: 0 auto;
+  padding: 5px 5px 0 0;
 }
