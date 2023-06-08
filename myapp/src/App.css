@@ -15,7 +15,7 @@
 }
 
 header {
-  background-color: black;
+  background-color: var(--blue);
   height: 70px;
   color: var(--yellow);
   font-weight: bolder;
@@ -43,7 +43,20 @@ header {
   height: calc(100% - 75px);
   overflow-y: scroll;
 }
-
+.msg_container::-webkit-scrollbar {
+  width: 7px;
+}
+.msg_container::-webkit-scrollbar-track {
+  background: var(--dark);
+}
+.msg_container::-webkit-scrollbar-thumb {
+  background: var(--gray);
+  border-radius: 3.5px;
+  transition: 0.2s;
+}
+.msg_container::-webkit-scrollbar-thumb:hover {
+  background: var(--orange);
+}
 /* .App-logo {
   height: 40vmin;
   pointer-events: none;
