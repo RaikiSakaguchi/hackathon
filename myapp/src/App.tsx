@@ -127,7 +127,11 @@ function App() {
         </div>
       </div>
       {isEditing && (
-        <EditMessage editMessage={editMessage} content={editingMsgContent} id={editingMsgId}/>
+        <EditMessage 
+          editMessage={editMessage}
+          close={() => setIsEdit(false)}
+          content={editingMsgContent}
+          id={editingMsgId}/>
       )}
     </div>
   );

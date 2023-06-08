@@ -3,7 +3,8 @@ import send_icon from "./images/send.svg"
 import "./editMsg.css"
 
 type Props = {
-  editMessage: (id: string, content: string) => void;
+  editMessage: (id: string, content: string) => void
+  close: () => void
   content: string
   id: string
 }
@@ -26,7 +27,7 @@ function EditMessage(props: Props) {
     <div className="message_editor">
       <div className="window">
       <div className="edit_head">
-        <p>×</p>
+        <p onClick={props.close} className="btn">×</p>
       </div>
       <form onSubmit={send}>
       <textarea
