@@ -10,6 +10,10 @@
   --gray: #6a7d8a;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   background-color: black;
 }
@@ -54,6 +58,7 @@ header {
 }
 .msg_container::-webkit-scrollbar {
   width: 7px;
+  display: block;
 }
 .msg_container::-webkit-scrollbar-track {
   background: var(--dark);
