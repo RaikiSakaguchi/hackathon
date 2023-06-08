@@ -125,7 +125,7 @@ function App() {
         <InputArea sendMessage={sendMessage}/>
       </div>
     </div>
-    <EditMessage editMessage={editMessage} content={editingMsgContent} id={editingMsgId}/>
+    {/* <EditMessage editMessage={editMessage} content={editingMsgContent} id={editingMsgId}/> */}
   </div>
   );
 }
