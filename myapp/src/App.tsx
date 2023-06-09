@@ -23,28 +23,32 @@ function App() {
   const [messageData, setMessage] = useState<Msg[]>();
   const [editingMsgId, setEditMsgId] = useState<string>("");
   const [editingMsgContent, setContent] = useState<string>("");
-  onAuthStateChanged(fireAuth, user => {
+  // console.log(isEditing);
+  onAuthStateChanged(fireAuth, (user) => {
     setLoginUser(user);
     scrollToEnd();
   })
   useEffect(() => {
-    fetchMessages();},[])
+    fetchMessages();
+    console.log("nyan");
+  },[])
   const scrollToEnd = () => {
     const chatArea = document.getElementById("chat_area")
     chatArea?.scrollTo(0, chatArea?.scrollHeight);
   }
-  var observer = new MutationObserver(()=>{scrollToEnd()})
-  const chat = document.getElementById("chat_area")
-  const config = {
-    childList: true,
-  }
-  if (chat != null) {
-    observer.observe(chat, config);
-  }
+  // var observer = new MutationObserver(()=>{scrollToEnd()})
+  // const chat = document.getElementById("chat_area")
+  // const config = {
+  //   childList: true,
+  // }
+  // if (chat != null) {
+  //   observer.observe(chat, config);
+  // }
   const handleIsEdit = (id: string, content: string) => {
     setEditMsgId(id);
     setContent(content);
     setIsEdit(true);
+    console.log("ちゃんと動いてる？")
   }
   const fetchMessages = async () => {
     try {
@@ -110,6 +114,7 @@ function App() {
   <div className="App">
     <header>
       <h1>This is HEADER!!!</h1>
+      {/* <button onClick={handleIsEdit}>お試し</button> */}
       {isEditing ? <p>true</p> : <p>false</p>}
       <LoginForm/>
     </header>
@@ -123,7 +128,7 @@ function App() {
         <div id='chat_area' className="msg_container">
           {messageData?.map((m_data: Msg) => (
             <Messages
-              // setIsEditing={handleIsEdit}
+              setIsEditing={handleIsEdit}
               id={m_data.id}
               name={loginUser.displayName ? loginUser.displayName : "Unknown"}
               date={m_data.date}
@@ -137,13 +142,13 @@ function App() {
       </div>
       )}
     </div>
-    {/* {isEditing && (
+    {isEditing ?
       <EditMessage 
         editMessage={editMessage}
         close={() => setIsEdit(false)}
         content={editingMsgContent}
         id={editingMsgId}/>
-    )} */}
+    : <div></div>}
   </div>
   );
 }
