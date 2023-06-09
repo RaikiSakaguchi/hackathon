@@ -172,13 +172,21 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		var nowContent Content
-		err = rows.Scan(&nowContent.Text)
-		if err != nil {
-			log.Printf("fail: scan content, %v\n", err)
-			return
+		contents := make([]Content, 0)
+		for rows.Next() {
+			var c Content
+			if err := rows.Scan(&c.Text); err != nil {
+				log.Printf("fail: rows.Scan, %v\n", err)
+				if err := rows.Close(); err != nil {
+					log.Printf("fail: rows.Close(), %v\n", err)
+				}
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			contents = append(contents, c)
 		}
-		if nowContent.Text == editMsg.Content {
+
+		if contents[0].Text == editMsg.Content {
 			fmt.Printf("same content")
 			return
 		}
