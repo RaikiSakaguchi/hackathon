@@ -172,7 +172,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		contents := make([]Content, 0)
+		var contents Content
 		for rows.Next() {
 			var c Content
 			if err := rows.Scan(&c.Text); err != nil {
@@ -183,10 +183,10 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			contents = append(contents, c)
+			contents = c
 		}
 
-		if contents[0].Text == editMsg.Content {
+		if contents.Text == editMsg.Content {
 			fmt.Printf("same content")
 			return
 		}
