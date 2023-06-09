@@ -189,6 +189,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		_, err = tx.Exec("UPDATE messages SET content = ?, is_edit = true WHERE id = ?;", editMsg.Content, editMsg.Id)
+		fmt.Printf("successfully updated content")
 		if err != nil {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)
