@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import pen from "./images/pencil.svg"
 import { StringifyOptions } from "querystring";
+import noimage from "./images/user_icon.png"
 
 type Props = {
   setIsEditing: (id: string, content: string) => void
@@ -11,6 +12,7 @@ type Props = {
   content: string
   isEdit: boolean
   isEditorMatch: boolean
+  photo: string
 }
 
 function Messages(props: Props) {
@@ -20,6 +22,13 @@ function Messages(props: Props) {
   return(
     <div className="message">
       <div className="msg_head">
+        <img src={props.photo}
+          alt=""
+          className={props.isEditorMatch ? "my_photo": "their_photo"}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = noimage;
+            }}/>
         <h1 className="senderName">{props.name}</h1>
         <p className="date">{props.date}</p>
         {props.isEditorMatch && (
