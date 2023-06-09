@@ -35,14 +35,14 @@ header {
   width: 100vw;
   height: calc(100vh - 70px);
   display: flex;
-  justify-content: center;
+  justify-content: left;
   margin: 0 auto;
 }
 .side_container {
   background-color: var(--midnight);
   flex-shrink: 0;
   flex-basis: 300px;
-  border-right: var(--red) 1.5px solid;
+  border-right: var(--red) 1px solid;
   border-image: linear-gradient(to bottom, var(--midnight) 0%, var(--red) 33%, var(--orange) 66%, var(--midnight) 100%);
   border-image-slice: 1;
   color: var(--gray);

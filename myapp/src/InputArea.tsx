@@ -3,11 +3,12 @@ import send_icon from "./images/send.svg"
 
 type Props = {
   sendMessage: (editorId: string, date: string, content: string, isEdit: boolean) => void;
+  editorId: string
 }
 
 function InputArea(props: Props) {
   const [msgContent, setContent] = useState<string>("");
-  const [editorId, setEditorId] = useState<string>("");
+  const [editorId, setEditorId] = useState<string>(props.editorId);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const send = (event : React.FormEvent<HTMLElement>) => {
     event.preventDefault();
