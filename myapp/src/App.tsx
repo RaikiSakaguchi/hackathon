@@ -112,7 +112,6 @@ function App() {
   <div className="App">
     <header>
       <h1>This is HEADER!!!</h1>
-      {isEditing ? <p>true</p> : <p>false</p>}
       <LoginForm/>
     </header>
     <div className="contents">
@@ -131,6 +130,7 @@ function App() {
               date={m_data.date}
               content={m_data.content}
               isEdit={m_data.isEdit}
+              photo={loginUser.photoURL ? loginUser.photoURL : "Unknown"}
               isEditorMatch={m_data.editorID==loginUser.uid}
               />
             ))}

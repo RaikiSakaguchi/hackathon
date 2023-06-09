@@ -5,7 +5,7 @@
   --red : #d7241b;
   --green: #329600;
   --blue: #1e68b2;
-  --yellow: #ffffbf;
+  --yellow: #ffffdf;
   --gray: #6a7d8a;
 }
 
@@ -20,8 +20,18 @@
   justify-content: space-evenly;
   align-items: baseline;
 }
+.msg_head img {
+  width: calc(var(--textSize)*2);
+  border-radius: 50%;
+}
+.msg_head .my_photo {
+  border: var(--blue) 1px solid;
+}
+.msg_head .their_photo {
+  border: var(--gray) 1px solid;
+}
 .senderName {
-  color: var(--red);
+  color: var(--orange);
 }
 .date {
   color: var(--green);

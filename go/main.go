@@ -166,21 +166,28 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
-		if editMsg.Content == "" {
-			return
-		}
 		rows, err := db.Query("SELECT content FROM messages WHERE id=?", editMsg.Id)
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		var nowContent Content
-		err = rows.Scan(&nowContent.Text)
-		if err != nil {
-			return
+		var contents Content
+		for rows.Next() {
+			var c Content
+			if err := rows.Scan(&c.Text); err != nil {
+				log.Printf("fail: rows.Scan, %v\n", err)
+				if err := rows.Close(); err != nil {
+					log.Printf("fail: rows.Close(), %v\n", err)
+				}
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			contents = c
 		}
-		if nowContent.Text == editMsg.Content {
+
+		if contents.Text == editMsg.Content {
+			fmt.Printf("same content")
 			return
 		}
 		tx, err := db.Begin()
@@ -190,6 +197,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		_, err = tx.Exec("UPDATE messages SET content = ?, is_edit = true WHERE id = ?;", editMsg.Content, editMsg.Id)
+		fmt.Printf("successfully updated content")
 		if err != nil {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)

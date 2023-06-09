@@ -20,8 +20,8 @@ function EditMessage(props: Props) {
     event.preventDefault();
     if (msgContent != "") {
       props.editMessage(props.id, msgContent);
+      setContent("");
     }
-    setContent("");
   }
   return(
     <div className="message_editor">
@@ -36,7 +36,11 @@ function EditMessage(props: Props) {
         name="message"
         value={msgContent}
         onChange={(e) => setContent(e.target.value)}
-        onKeyDown={handleKeyDown}></textarea>
+        onKeyDown={handleKeyDown}
+        onFocus={(e) => {
+          e.currentTarget.setSelectionRange(msgContent.length, msgContent.length)
+        }}
+        autoFocus></textarea>
       <button title="編集完了" className='send_btn btn' type="submit">
         <img src={send_icon} className="send_icon" alt="submit"/>
       </button>

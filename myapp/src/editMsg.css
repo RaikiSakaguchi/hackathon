@@ -28,6 +28,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  background-color: var(--midnight);
+  border: var(--red) 1px solid;
+  border-image: linear-gradient(135deg, var(--midnight) 10%, var(--orange) 50%, var(--red) 100%);
+  border-image-slice: 1;
 }
 .edit_head {
   width: 100%;
