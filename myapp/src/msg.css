@@ -21,7 +21,7 @@
   align-items: baseline;
 }
 .senderName {
-  color: aqua;
+  color: var(--red);
 }
 .date {
   color: var(--green);
