@@ -166,9 +166,6 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
-		if editMsg.Content == "" {
-			return
-		}
 		rows, err := db.Query("SELECT content FROM messages WHERE id=?", editMsg.Id)
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
@@ -178,9 +175,11 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 		var nowContent Content
 		err = rows.Scan(&nowContent.Text)
 		if err != nil {
+			log.Printf("fail: scan content, %v\n", err)
 			return
 		}
 		if nowContent.Text == editMsg.Content {
+			fmt.Printf("same content")
 			return
 		}
 		tx, err := db.Begin()
