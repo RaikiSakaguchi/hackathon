@@ -35,6 +35,11 @@ type MsgDataForEdit struct {
 type Content struct {
 	Text string
 }
+type UserInfo struct {
+	Id    string `json:"id"`
+	Name  string `json:"name"`
+	Photo string `json:"photo"`
+}
 
 var db *sql.DB
 
@@ -54,7 +59,14 @@ func init() {
 	}
 	db = _db
 }
-
+func include(slice []string, target string) bool {
+	for _, num := range slice {
+		if num == target {
+			return true
+		}
+	}
+	return false
+}
 func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -136,7 +148,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
 func editHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -198,10 +209,114 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+func userHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Headers", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Content-Type", "application/json")
+	switch r.Method {
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
+		return
+	case http.MethodGet:
+		//指定されたユーザー情報を取得する
+		decoder := json.NewDecoder(r.Body)
+		var newUser UserInfo
+		if err := decoder.Decode(&newUser); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Errorf(err.Error())
+			return
+		}
+		rows, err := db.Query("SELECT * FROM users WHERE id = ?", newUser.Id)
+		if err != nil {
+			log.Printf("fail: db.Query, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		var u UserInfo
+		if err := rows.Scan(&u.Id, &u.Name, &u.Photo); err != nil {
+			log.Printf("fail: rows.Scan, %v\n", err)
+			if err := rows.Close(); err != nil {
+				log.Printf("fail: rows.Close(), %v\n", err)
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		//msgsの内容をjsonに変換する
+		bytes, err := json.Marshal(u)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(bytes)
+	case http.MethodPost:
+		//ユーザー情報を登録する
+		rows, err := db.Query("SELECT id FROM users")
+		if err != nil {
+			log.Printf("fail: db.Query, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		ids := make([]string, 0)
+		for rows.Next() {
+			var u UserInfo
+			if err := rows.Scan(&u.Id); err != nil {
+				log.Printf("fail: rows.Scan, %v\n", err)
+				if err := rows.Close(); err != nil {
+					log.Printf("fail: rows.Close(), %v\n", err)
+				}
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			ids = append(ids, u.Id)
+		}
+		decoder := json.NewDecoder(r.Body)
+		var newUser UserInfo
+		if err := decoder.Decode(&newUser); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Errorf(err.Error())
+			return
+		}
+		if include(ids, newUser.Id) {
+			return
+		}
+		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
+		ms := ulid.Timestamp(time.Now())
+		_userId, _ := ulid.New(ms, entropy)
+		userId := _userId.String()
+		tx, err := db.Begin()
+		if err != nil {
+			fmt.Errorf(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		_, err = tx.Exec("insert into users values (?, ?, ?);", userId, newUser.Name, newUser.Photo)
+		if err != nil {
+			tx.Rollback()
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Printf(err.Error())
+			fmt.Print(newUser)
+			return
+		}
+		if err := tx.Commit(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Errorf(err.Error())
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	default:
+		log.Printf("fail: HTTP Method is %s\n", r.Method)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
 
 func main() {
 	http.HandleFunc("/message", handler)
 	http.HandleFunc("/edit", editHandler)
+	http.HandleFunc("/user", userHandler)
 	closeDBWithSysCall()
 	log.Println("Listening...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
