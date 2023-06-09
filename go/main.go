@@ -279,7 +279,9 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
+		fmt.Printf(newUser.Id, newUser.Name, newUser.Photo)
 		if include(ids, newUser.Id) {
+			fmt.Printf("same user")
 			return
 		}
 		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
