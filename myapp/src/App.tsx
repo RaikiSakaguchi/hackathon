@@ -23,12 +23,14 @@ function App() {
   const [messageData, setMessage] = useState<Msg[]>();
   const [editingMsgId, setEditMsgId] = useState<string>("");
   const [editingMsgContent, setContent] = useState<string>("");
-  onAuthStateChanged(fireAuth, user => {
-    setLoginUser(user);
-    scrollToEnd();
-  })
+  // console.log(isEditing);
   useEffect(() => {
-    fetchMessages();},[])
+    onAuthStateChanged(fireAuth, (user) => {
+      setLoginUser(user);
+    })
+    fetchMessages();
+    scrollToEnd();
+  },[])
   const scrollToEnd = () => {
     const chatArea = document.getElementById("chat_area")
     chatArea?.scrollTo(0, chatArea?.scrollHeight);
@@ -123,7 +125,7 @@ function App() {
         <div id='chat_area' className="msg_container">
           {messageData?.map((m_data: Msg) => (
             <Messages
-              // setIsEditing={handleIsEdit}
+              setIsEditing={handleIsEdit}
               id={m_data.id}
               name={loginUser.displayName ? loginUser.displayName : "Unknown"}
               date={m_data.date}
@@ -137,13 +139,13 @@ function App() {
       </div>
       )}
     </div>
-    {/* {isEditing && (
+    {isEditing ?
       <EditMessage 
         editMessage={editMessage}
         close={() => setIsEdit(false)}
         content={editingMsgContent}
         id={editingMsgId}/>
-    )} */}
+    : <div></div>}
   </div>
   );
 }
