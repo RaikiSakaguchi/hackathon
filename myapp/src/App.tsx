@@ -24,31 +24,29 @@ function App() {
   const [editingMsgId, setEditMsgId] = useState<string>("");
   const [editingMsgContent, setContent] = useState<string>("");
   // console.log(isEditing);
-  onAuthStateChanged(fireAuth, (user) => {
-    setLoginUser(user);
-    scrollToEnd();
-  })
   useEffect(() => {
+    onAuthStateChanged(fireAuth, (user) => {
+      setLoginUser(user);
+    })
     fetchMessages();
-    console.log("nyan");
+    scrollToEnd();
   },[])
   const scrollToEnd = () => {
     const chatArea = document.getElementById("chat_area")
     chatArea?.scrollTo(0, chatArea?.scrollHeight);
   }
-  // var observer = new MutationObserver(()=>{scrollToEnd()})
-  // const chat = document.getElementById("chat_area")
-  // const config = {
-  //   childList: true,
-  // }
-  // if (chat != null) {
-  //   observer.observe(chat, config);
-  // }
+  var observer = new MutationObserver(()=>{scrollToEnd()})
+  const chat = document.getElementById("chat_area")
+  const config = {
+    childList: true,
+  }
+  if (chat != null) {
+    observer.observe(chat, config);
+  }
   const handleIsEdit = (id: string, content: string) => {
     setEditMsgId(id);
     setContent(content);
     setIsEdit(true);
-    console.log("ちゃんと動いてる？")
   }
   const fetchMessages = async () => {
     try {
@@ -114,7 +112,6 @@ function App() {
   <div className="App">
     <header>
       <h1>This is HEADER!!!</h1>
-      {/* <button onClick={handleIsEdit}>お試し</button> */}
       {isEditing ? <p>true</p> : <p>false</p>}
       <LoginForm/>
     </header>
