@@ -7,18 +7,20 @@ import InputArea from './InputArea';
 import EditMessage from './EditMessage';
 import { LoginForm } from './LoginForm';
 import { fireAuth } from './firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { User, onAuthStateChanged } from 'firebase/auth';
 
 type Msg = {
   id : string
   editorID : string
+  editorName : string
   date : string
   content : string
   isEdit : boolean
+  photo : string
 }
 
 function App() {
-  const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
+  const [loginUser, setLoginUser] = useState<User|null>(fireAuth.currentUser);
   const [isEditing, setIsEdit] = useState<boolean>(false);
   const [messageData, setMessage] = useState<Msg[]>();
   const [editingMsgId, setEditMsgId] = useState<string>("");
@@ -112,32 +114,38 @@ function App() {
   <div className="App">
     <header>
       <h1>This is HEADER!!!</h1>
-      <LoginForm/>
+      {loginUser && (
+        <LoginForm/>
+      )}
     </header>
     <div className="contents">
       <div className="side_container">
         <p>hello from side bar</p>
         <p>hello from side bar</p>
       </div>
-      {loginUser && (
+      {loginUser ?
       <div className="main_container">
         <div id='chat_area' className="msg_container">
           {messageData?.map((m_data: Msg) => (
             <Messages
               setIsEditing={handleIsEdit}
               id={m_data.id}
-              name={loginUser.displayName ? loginUser.displayName : "Unknown"}
+              name={m_data.editorName}
               date={m_data.date}
               content={m_data.content}
               isEdit={m_data.isEdit}
-              photo={loginUser.photoURL ? loginUser.photoURL : "Unknown"}
+              photo={m_data.photo}
               isEditorMatch={m_data.editorID==loginUser.uid}
               />
             ))}
         </div>
         <InputArea editorId={loginUser.uid} sendMessage={sendMessage}/>
       </div>
-      )}
+      :
+      <div className="main_container">
+        <LoginForm/>
+      </div>
+      }
     </div>
     {isEditing ?
       <EditMessage 

@@ -16,11 +16,13 @@ import (
 )
 
 type MsgDataForHTTPGet struct {
-	Id       string `json:"id"`
-	EditorID string `json:"editorID"`
-	Date     string `json:"date"`
-	IsEdit   bool   `json:"isEdit"`
-	Content  string `json:"content"`
+	Id         string `json:"id"`
+	EditorID   string `json:"editorID"`
+	EditorName string `json:"editorName"`
+	Date       string `json:"date"`
+	IsEdit     bool   `json:"isEdit"`
+	Content    string `json:"content"`
+	Photo      string `json:"photo"`
 }
 type MsgDataForHTTPPost struct {
 	EditorID string `json:"editorID"`
@@ -78,7 +80,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodGet:
 		//全メッセージを取得する
-		rows, err := db.Query("SELECT id, editor_id, created_at, content, is_edit FROM messages")
+		rows, err := db.Query(
+			"SELECT messages.id, editor_id, editor_name, created_at, content, is_edit, photo FROM messages join users on messages.editor_id = users.id;")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -87,7 +90,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		msgs := make([]MsgDataForHTTPGet, 0)
 		for rows.Next() {
 			var u MsgDataForHTTPGet
-			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content, &u.IsEdit); err != nil {
+			if err := rows.Scan(&u.Id, &u.EditorID, &u.EditorName, &u.Date, &u.Content, &u.IsEdit, &u.Photo); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
 				if err := rows.Close(); err != nil {
 					log.Printf("fail: rows.Close(), %v\n", err)
@@ -260,6 +263,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(bytes)
 	case http.MethodPost:
+		fmt.Printf("呼び出されたよ")
 		//ユーザー情報を登録する
 		rows, err := db.Query("SELECT id FROM users")
 		if err != nil {
@@ -280,6 +284,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			ids = append(ids, u.Id)
 		}
+		fmt.Printf("初めの1っぽ")
 		decoder := json.NewDecoder(r.Body)
 		var newUser UserInfo
 		if err := decoder.Decode(&newUser); err != nil {
@@ -287,27 +292,22 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
-		fmt.Printf(newUser.Id, newUser.Name, newUser.Photo)
+		fmt.Printf("読み込めた\n")
 		if include(ids, newUser.Id) {
 			fmt.Printf("same user")
 			return
 		}
-		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
-		ms := ulid.Timestamp(time.Now())
-		_userId, _ := ulid.New(ms, entropy)
-		userId := _userId.String()
 		tx, err := db.Begin()
 		if err != nil {
 			fmt.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		_, err = tx.Exec("insert into users values (?, ?, ?);", userId, newUser.Name, newUser.Photo)
+		_, err = tx.Exec("insert into users values (?, ?, ?);", newUser.Id, newUser.Name, newUser.Photo)
 		if err != nil {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Printf(err.Error())
-			fmt.Print(newUser)
 			return
 		}
 		if err := tx.Commit(); err != nil {
@@ -315,6 +315,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
+		fmt.Printf("登録完了！")
 		w.WriteHeader(http.StatusOK)
 	default:
 		log.Printf("fail: HTTP Method is %s\n", r.Method)
