@@ -80,7 +80,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		//全メッセージを取得する
 		rows, err := db.Query(
-			"SELECT id.messages, editor_id, editor_name, created_at, content, is_edit FROM messages join users on editor_id.messages = id.users;")
+			"SELECT messages.id, editor_id, editor_name, created_at, content, is_edit FROM messages join users on messages.editor_id = users.id;")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
