@@ -16,13 +16,14 @@ function ConfirmDelete(props: Props) {
   return (
     <div className="del_msg">
       <div className="window">
-        <p>{props.content}</p>
+        <p className="del_content">{props.content}</p>
         <img
           title="メッセージを消去"
           className="btn"
           src={delIcon}
           onClick={confirm}
           alt="消去" />
+        <p className="btn" onClick={props.close}>×</p>
       </div>
     </div>
   )

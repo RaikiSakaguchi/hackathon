@@ -41,9 +41,11 @@
   height: calc(var(--textSize) + 3px);
 }
 .message .text {
+  text-align: left;
   margin: 0 auto;
   width: 80%;
   border-bottom: var(--blue) 1px dotted;
+  padding-left: 100px;
   padding-bottom: 5px;
 }
 .is_edit {

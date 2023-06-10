@@ -30,10 +30,26 @@ body {
 }
 
 header {
+  display: flex;
   background-image: linear-gradient(120deg, var(--midnight) calc(100% - 300px), var(--gray) calc(100% - 250px));
   height: 70px;
   color: var(--yellow);
   font-weight: bolder;
+}
+header h1 {
+  flex-basis: 100%;
+  text-align: left;
+  margin-left: 100px;
+  font-size: calc(var(--textSize) * 2);
+  line-height: 70px;
+}
+.user_box {
+  height: 100%;
+  flex-basis: 280px;
+}
+.user_icon {
+  width: calc(var(--textSize)*2);
+  border-radius: 50%;
 }
 
 .contents {

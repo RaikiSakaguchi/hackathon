@@ -3,12 +3,14 @@ import './reset.css';
 import './App.css';
 import './msg.css'
 import scrollDown from "./images/down.svg"
+import noimage from './images/user_icon.png'
 import Messages from './Messages';
 import InputArea from './InputArea';
 import EditMessage from './EditMessage';
 import { LoginForm } from './LoginForm';
 import { fireAuth } from './firebase';
 import { User, onAuthStateChanged } from 'firebase/auth';
+import { userInfo } from 'os';
 
 type Msg = {
   id : string
@@ -133,13 +135,23 @@ function App() {
       console.error(err);
     }
   }
-  
+
   return (
   <div className="App">
     <header>
-      <h1>This is HEADER!!!</h1>
+      <h1>Hackathon Chat App</h1>
       {loginUser && (
-        <LoginForm scroll={scrollToEnd}/>
+        <div className="user_box">
+          <img
+            src={loginUser.photoURL ? loginUser.photoURL : ""}
+            className='user_icon'
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = noimage;
+              }}
+            alt=""/>
+          <LoginForm scroll={scrollToEnd}/>
+        </div>
       )}
     </header>
     <div className="contents">

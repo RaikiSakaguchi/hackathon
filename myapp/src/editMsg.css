@@ -88,3 +88,22 @@
   margin: 0 auto;
   padding: 5px 5px 0 0;
 }
+
+.del_msg .window {
+  display: flex;
+  justify-content: center;
+  height: 100px;
+}
+.del_msg .del_content {
+  flex-basis: 100%;
+  display: inline;
+  vertical-align: center;
+}
+.del_msg img {
+  margin: 0 50px;
+  width: 20px;
+}
+.del_msg .btn {
+  font-size: calc(var(--textSize) * 2);
+  margin-right: 5px;
+}
