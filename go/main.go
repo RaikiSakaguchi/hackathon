@@ -154,7 +154,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func editHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "*")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, DELETE, OPTIONS")
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case http.MethodOptions:
@@ -205,7 +205,35 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Printf(err.Error())
-			fmt.Print(editMsg)
+			return
+		}
+		if err := tx.Commit(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Errorf(err.Error())
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	case http.MethodDelete:
+		//メッセージを消去する
+		decoder := json.NewDecoder(r.Body)
+		var editMsg MsgDataForEdit
+		if err := decoder.Decode(&editMsg); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Errorf(err.Error())
+			return
+		}
+		tx, err := db.Begin()
+		if err != nil {
+			fmt.Errorf(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		_, err = tx.Exec("DELETE from messages WHERE id = ?;", editMsg.Id)
+		fmt.Printf("successfully updated content")
+		if err != nil {
+			tx.Rollback()
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Printf(err.Error())
 			return
 		}
 		if err := tx.Commit(); err != nil {
@@ -263,7 +291,6 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(bytes)
 	case http.MethodPost:
-		fmt.Printf("呼び出されたよ")
 		//ユーザー情報を登録する
 		rows, err := db.Query("SELECT id FROM users")
 		if err != nil {
@@ -284,7 +311,6 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			ids = append(ids, u.Id)
 		}
-		fmt.Printf("初めの1っぽ")
 		decoder := json.NewDecoder(r.Body)
 		var newUser UserInfo
 		if err := decoder.Decode(&newUser); err != nil {
@@ -292,7 +318,6 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
-		fmt.Printf("読み込めた\n")
 		if include(ids, newUser.Id) {
 			fmt.Printf("same user")
 			return
