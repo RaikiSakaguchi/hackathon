@@ -292,22 +292,18 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Printf("same user")
 			return
 		}
-		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
-		ms := ulid.Timestamp(time.Now())
-		_userId, _ := ulid.New(ms, entropy)
-		userId := _userId.String()
 		tx, err := db.Begin()
 		if err != nil {
 			fmt.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		_, err = tx.Exec("insert into users values (?, ?, ?);", userId, newUser.Name, newUser.Photo)
+		fmt.Printf("ユーザー登録 %s %s %s", newUser.Id, newUser.Name, newUser.Photo)
+		_, err = tx.Exec("insert into users values (?, ?, ?);", newUser.Id, newUser.Name, newUser.Photo)
 		if err != nil {
 			tx.Rollback()
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Printf(err.Error())
-			fmt.Print(newUser)
 			return
 		}
 		if err := tx.Commit(); err != nil {
