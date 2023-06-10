@@ -4,6 +4,7 @@ import pen from "./images/pencil.svg"
 import delImg from "./images/delete.svg"
 import noimage from "./images/user_icon.png"
 import { StringifyOptions } from "querystring";
+import ConfirmDelete from "./ConfirmDelete";
 
 type Props = {
   setIsEditing: (id: string, content: string) => void
@@ -18,11 +19,18 @@ type Props = {
 }
 
 function Messages(props: Props) {
+  const [tryDelete, setTryDelete] = useState<boolean>(false);
   const isEditing = () => {
     props.setIsEditing(props.id, props.content);
   }
   return(
     <div className="message">
+      {tryDelete && (
+        <ConfirmDelete
+          delete={() => props.deleteMsg(props.id)}
+          close={() => setTryDelete(false)}
+          content={props.content}/>
+      )}
       <div className="msg_head">
         <img src={props.photo}
           alt=""
@@ -45,7 +53,7 @@ function Messages(props: Props) {
             className="delete_icon btn"
             src={delImg}
             alt="消去"
-            onClick={() => {props.deleteMsg(props.id)}}
+            onClick={() => {setTryDelete(true)}}
             title="メッセージを消去"/>
         </div>
         )}

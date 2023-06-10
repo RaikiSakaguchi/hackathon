@@ -10,7 +10,7 @@
   --gray: #6a7d8a;
 }
 
-.message_editor {
+.message_editor, .del_msg {
   width: 100%;
   height: 100vh;
   background-color: #00000090;
