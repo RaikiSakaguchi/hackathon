@@ -69,6 +69,7 @@ function App() {
         }
         const message = await res.json();
         setMessage(message);
+        scrollToEnd();
       } catch (err) {
         console.error(err);
       }

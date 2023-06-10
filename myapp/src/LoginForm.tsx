@@ -63,13 +63,13 @@ export const LoginForm: React.FC<Props> = (props: Props) => {
     <div className="login_form">
     {!fireAuth.currentUser ? 
     <div className="login">
-      <button className="btn" title="ログイン" onClick={signInWithGoogle}>
+      <button className="login_btn" title="ログイン" onClick={signInWithGoogle}>
         Googleでログイン
       </button>
     </div>
     :
     <div className="logout">
-      <button className="btn" title="ログアウト" onClick={signOutWithGoogle}>
+      <button className="logout_btn" title="ログアウト" onClick={signOutWithGoogle}>
         ログアウト
       </button>
     </div>
