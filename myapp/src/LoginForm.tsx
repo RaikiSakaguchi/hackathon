@@ -2,12 +2,14 @@ import { signInWithPopup, GoogleAuthProvider, signOut, getAuth, User } from "fir
 import { fireAuth } from "./firebase";
 import { useState } from "react";
 
-export const LoginForm: React.FC = () => {
+type Props = {
+  scroll : () => void
+}
+
+export const LoginForm: React.FC<Props> = (props: Props) => {
   const [user, setUser] = useState<User|null>(getAuth().currentUser);
   const assignUser = async (u: User) => {
-    console.log("ユーザー登録したい")
     try {
-      console.log(user);
       const newUser = await fetch(
         "https://hackathon2-5xie62mgea-uc.a.run.app/user",
         {
@@ -36,13 +38,8 @@ export const LoginForm: React.FC = () => {
       .then(res => {
         const u = res.user;
         setUser(u);
-        console.log(user);
-        console.log(u);
         alert("ログインユーザー: " + u.displayName);
         assignUser(u);
-      })
-      .then(_ => {
-        console.log(user);
       })
       .catch(err => {
         const errorMessage = err.message;

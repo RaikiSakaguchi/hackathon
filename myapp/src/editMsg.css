@@ -52,6 +52,7 @@
   background-color: var(--gray);
   color: var(--yellow);
   border-color: none;
+  border-width: medium;
   border-radius: 10px;
   padding: 6px;
   resize: none;

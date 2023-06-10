@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './reset.css';
 import './App.css';
 import './msg.css'
+import scrollDown from "./images/down.svg"
 import Messages from './Messages';
 import InputArea from './InputArea';
 import EditMessage from './EditMessage';
@@ -35,7 +36,10 @@ function App() {
   },[])
   const scrollToEnd = () => {
     const chatArea = document.getElementById("chat_area")
-    chatArea?.scrollTo(0, chatArea?.scrollHeight);
+    chatArea?.scrollTo({
+      top: chatArea.scrollHeight,
+      behavior: 'smooth'
+    });
   }
   var observer = new MutationObserver(()=>{scrollToEnd()})
   const chat = document.getElementById("chat_area")
@@ -129,18 +133,25 @@ function App() {
       console.error(err);
     }
   }
+  
   return (
   <div className="App">
     <header>
       <h1>This is HEADER!!!</h1>
       {loginUser && (
-        <LoginForm/>
+        <LoginForm scroll={scrollToEnd}/>
       )}
     </header>
     <div className="contents">
       <div className="side_container">
         <p>hello from side bar</p>
         <p>hello from side bar</p>
+        <img
+          src={scrollDown}
+          className='btn scroll_btn'
+          alt="最新の投稿へ"
+          onClick={scrollToEnd}
+          title='最新の投稿へ'/>
       </div>
       {loginUser ?
       <div className="main_container">
@@ -163,7 +174,7 @@ function App() {
       </div>
       :
       <div className="main_container">
-        <LoginForm/>
+        <LoginForm scroll={scrollToEnd}/>
       </div>
       }
     </div>
