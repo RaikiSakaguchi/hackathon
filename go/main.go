@@ -283,6 +283,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			ids = append(ids, u.Id)
 		}
+		fmt.Printf("初めの1っぽ")
 		decoder := json.NewDecoder(r.Body)
 		var newUser UserInfo
 		if err := decoder.Decode(&newUser); err != nil {
@@ -290,7 +291,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
-		fmt.Printf(newUser.Id, newUser.Name, newUser.Photo)
+		fmt.Printf("読み込めた")
 		if include(ids, newUser.Id) {
 			fmt.Printf("same user")
 			return
