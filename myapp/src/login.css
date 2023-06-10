@@ -1,0 +1,21 @@
+:root {
+  --textSize: 14px;
+  --dark : #292e39;
+  --orange : #ff8c00;
+  --red : #d7241b;
+  --green: #329600;
+  --blue: #1e68b2;
+  --yellow: #ffffbf;
+  --midnight : #061031ce;
+  --gray: #6a7d8a;
+}
+
+.btn {
+  color: var(--yellow);
+  background-color: var(--midnight);
+  border: none;
+  transition: 0.2s;
+}
+.btn:hover {
+  background-color: var(--blue);
+}

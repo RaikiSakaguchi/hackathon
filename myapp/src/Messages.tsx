@@ -41,6 +41,7 @@ function Messages(props: Props) {
             }}/>
         <h1 className="senderName">{props.name}</h1>
         <p className="date">{props.date}</p>
+        <div className="editor_only">
         {props.isEditorMatch && (
         <div>
           <img
@@ -57,6 +58,7 @@ function Messages(props: Props) {
             title="メッセージを消去"/>
         </div>
         )}
+        </div>
       </div>
       <div className="text">
         <p>{props.content}</p>

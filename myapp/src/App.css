@@ -46,10 +46,15 @@ header h1 {
 .user_box {
   height: 100%;
   flex-basis: 280px;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
 }
 .user_icon {
   width: calc(var(--textSize)*2);
+  height: calc(var(--textSize)*2);
   border-radius: 50%;
+  margin-right: 10px;
 }
 
 .contents {

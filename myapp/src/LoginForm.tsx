@@ -1,6 +1,7 @@
 import { signInWithPopup, GoogleAuthProvider, signOut, getAuth, User } from "firebase/auth";
 import { fireAuth } from "./firebase";
 import { useState } from "react";
+import "./login.css"
 
 type Props = {
   scroll : () => void
@@ -59,7 +60,7 @@ export const LoginForm: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <div>
+    <div className="login_form">
     {!fireAuth.currentUser ? 
     <div className="login">
       <button className="btn" title="ログイン" onClick={signInWithGoogle}>
