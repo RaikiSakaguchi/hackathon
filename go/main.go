@@ -16,11 +16,12 @@ import (
 )
 
 type MsgDataForHTTPGet struct {
-	Id       string `json:"id"`
-	EditorID string `json:"editorID"`
-	Date     string `json:"date"`
-	IsEdit   bool   `json:"isEdit"`
-	Content  string `json:"content"`
+	Id         string `json:"id"`
+	EditorID   string `json:"editorID"`
+	EditorName string `json:"editorName"`
+	Date       string `json:"date"`
+	IsEdit     bool   `json:"isEdit"`
+	Content    string `json:"content"`
 }
 type MsgDataForHTTPPost struct {
 	EditorID string `json:"editorID"`
@@ -78,7 +79,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodGet:
 		//全メッセージを取得する
-		rows, err := db.Query("SELECT id, editor_id, created_at, content, is_edit FROM messages")
+		rows, err := db.Query(
+			"SELECT id.messages, editor_id, editor_name, created_at, content, is_edit FROM messages join users on editor_id.messages = id.users;")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -87,7 +89,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		msgs := make([]MsgDataForHTTPGet, 0)
 		for rows.Next() {
 			var u MsgDataForHTTPGet
-			if err := rows.Scan(&u.Id, &u.EditorID, &u.Date, &u.Content, &u.IsEdit); err != nil {
+			if err := rows.Scan(&u.Id, &u.EditorID, &u.EditorName, &u.Date, &u.Content, &u.IsEdit); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
 				if err := rows.Close(); err != nil {
 					log.Printf("fail: rows.Close(), %v\n", err)
