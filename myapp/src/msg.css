@@ -37,7 +37,7 @@
   color: var(--green);
   font-size: calc(var(--textSize) - 2px);
 }
-.edit_icon {
+.edit_icon, .delete_icon {
   height: calc(var(--textSize) + 3px);
 }
 .message .text {

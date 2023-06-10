@@ -110,6 +110,25 @@ function App() {
       console.error(err);
     }
   }
+  const deleteMessage = async (id: string) => {
+    try {
+      const editedMsg = await fetch(
+        "https://hackathon2-5xie62mgea-uc.a.run.app/edit",
+        {
+          method: "DELETE",
+          body: JSON.stringify({
+            id: id
+          }),
+        }
+        );
+      if (!editedMsg.ok) {
+        throw Error(`Failed to edit message: ${editedMsg.status}`);
+      }
+      fetchMessages();
+    } catch (err) {
+      console.error(err);
+    }
+  }
   return (
   <div className="App">
     <header>
@@ -129,6 +148,7 @@ function App() {
           {messageData?.map((m_data: Msg) => (
             <Messages
               setIsEditing={handleIsEdit}
+              deleteMsg={deleteMessage}
               id={m_data.id}
               name={m_data.editorName}
               date={m_data.date}
