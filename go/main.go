@@ -263,6 +263,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(bytes)
 	case http.MethodPost:
+		fmt.Printf("呼び出されたよ")
 		//ユーザー情報を登録する
 		rows, err := db.Query("SELECT id FROM users")
 		if err != nil {
