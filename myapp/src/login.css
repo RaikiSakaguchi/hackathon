@@ -10,12 +10,12 @@
   --gray: #6a7d8a;
 }
 
-.btn {
+.login_form .btn {
   color: var(--yellow);
   background-color: var(--midnight);
   border: none;
   transition: 0.2s;
 }
-.btn:hover {
+.login_form .btn:hover {
   background-color: var(--blue);
 }
