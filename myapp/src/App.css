@@ -30,10 +30,31 @@ body {
 }
 
 header {
-  background-image: linear-gradient(120deg, var(--midnight) 83%, var(--gray) 85%);
+  display: flex;
+  background-image: linear-gradient(120deg, var(--midnight) calc(100% - 300px), var(--gray) calc(100% - 250px));
   height: 70px;
   color: var(--yellow);
   font-weight: bolder;
+}
+header h1 {
+  flex-basis: 100%;
+  text-align: left;
+  margin-left: 100px;
+  font-size: calc(var(--textSize) * 2);
+  line-height: 70px;
+}
+.user_box {
+  height: 100%;
+  flex-basis: 280px;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+.user_icon {
+  width: calc(var(--textSize)*2);
+  height: calc(var(--textSize)*2);
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
 .contents {
@@ -52,6 +73,13 @@ header {
   border-image-slice: 1;
   color: var(--gray);
 }
+.scroll_btn {
+  height: 30px;
+  transition: 0.2s;
+}
+.scroll_btn:hover {
+  height: 35px;
+}
 .main_container {
   flex-basis: 100%;
   height: 100%;
@@ -59,9 +87,9 @@ header {
 }
 
 .msg_container {
+  transition: 0.2s;
   height: calc(100% - 75px);
   overflow-y: scroll;
-  /* transition: 1s; */
 }
 .msg_container::-webkit-scrollbar {
   margin-right: 3px;
@@ -74,6 +102,7 @@ header {
 .msg_container::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, var(--dark) 0%, var(--red) 50%, var(--orange) 100%);
   border-radius: 3.5px;
+  transition: 0.2s;
 }
 /* .msg_container::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, var(--blue) 0%, var(--red) 50%, var(--orange) 100%);

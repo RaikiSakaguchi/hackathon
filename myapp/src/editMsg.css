@@ -10,7 +10,7 @@
   --gray: #6a7d8a;
 }
 
-.message_editor {
+.message_editor, .del_msg {
   width: 100%;
   height: 100vh;
   background-color: #00000090;
@@ -52,6 +52,7 @@
   background-color: var(--gray);
   color: var(--yellow);
   border-color: none;
+  border-width: medium;
   border-radius: 10px;
   padding: 6px;
   resize: none;
@@ -86,4 +87,23 @@
 .message_editor .send_icon {
   margin: 0 auto;
   padding: 5px 5px 0 0;
+}
+
+.del_msg .window {
+  display: flex;
+  justify-content: center;
+  height: 100px;
+}
+.del_msg .del_content {
+  flex-basis: 100%;
+  display: inline;
+  vertical-align: center;
+}
+.del_msg img {
+  margin: 0 50px;
+  width: 20px;
+}
+.del_msg .btn {
+  font-size: calc(var(--textSize) * 2);
+  margin-right: 5px;
 }
