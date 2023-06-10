@@ -4,17 +4,18 @@ import { useState } from "react";
 
 export const LoginForm: React.FC = () => {
   const [user, setUser] = useState<User|null>(getAuth().currentUser);
-  const assignUser = async () => {
+  const assignUser = async (u: User) => {
     console.log("ユーザー登録したい")
     try {
+      console.log(user);
       const newUser = await fetch(
         "https://hackathon2-5xie62mgea-uc.a.run.app/user",
         {
           method: "POST",
           body: JSON.stringify({
-            id : user?.uid,
-            name : user?.displayName,
-            photo : user?.photoURL
+            id : u?.uid,
+            name : u?.displayName,
+            photo : u?.photoURL
           }),
         }
         );
@@ -33,10 +34,15 @@ export const LoginForm: React.FC = () => {
     // ログイン用のポップアップを表示
     signInWithPopup(fireAuth, provider)
       .then(res => {
-        const user = res.user;
-        setUser(user);
-        assignUser();
-        alert("ログインユーザー: " + user.displayName);
+        const u = res.user;
+        setUser(u);
+        console.log(user);
+        console.log(u);
+        alert("ログインユーザー: " + u.displayName);
+        assignUser(u);
+      })
+      .then(_ => {
+        console.log(user);
       })
       .catch(err => {
         const errorMessage = err.message;
