@@ -1,9 +1,11 @@
-import { signInWithPopup, GoogleAuthProvider, signOut, getAuth } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, signOut, getAuth, User } from "firebase/auth";
 import { fireAuth } from "./firebase";
+import { useState } from "react";
 
 export const LoginForm: React.FC = () => {
-  const user = getAuth().currentUser;
+  const [user, setUser] = useState<User|null>(getAuth().currentUser);
   const assignUser = async () => {
+    console.log("ユーザー登録したい")
     try {
       const newUser = await fetch(
         "https://hackathon2-5xie62mgea-uc.a.run.app/user",
@@ -32,13 +34,14 @@ export const LoginForm: React.FC = () => {
     signInWithPopup(fireAuth, provider)
       .then(res => {
         const user = res.user;
+        setUser(user);
+        assignUser();
         alert("ログインユーザー: " + user.displayName);
       })
       .catch(err => {
         const errorMessage = err.message;
         alert(errorMessage);
       });
-    assignUser();
   };
 
   /**

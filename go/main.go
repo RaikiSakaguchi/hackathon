@@ -292,7 +292,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
-		fmt.Printf("読み込めた")
+		fmt.Printf("読み込めた\n")
 		if include(ids, newUser.Id) {
 			fmt.Printf("same user")
 			return
@@ -303,7 +303,6 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		fmt.Printf("ユーザー登録 %s %s %s", newUser.Id, newUser.Name, newUser.Photo)
 		_, err = tx.Exec("insert into users values (?, ?, ?);", newUser.Id, newUser.Name, newUser.Photo)
 		if err != nil {
 			tx.Rollback()
@@ -316,6 +315,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Errorf(err.Error())
 			return
 		}
+		fmt.Printf("登録完了！")
 		w.WriteHeader(http.StatusOK)
 	default:
 		log.Printf("fail: HTTP Method is %s\n", r.Method)

@@ -16,10 +16,10 @@
 
 body {
   background-color: black;
-  white-space:  pre-line;
 }
 
 .App {
+  white-space:  pre-line;
   text-align: center;
   position: absolute;
   box-sizing: border-box;
@@ -48,7 +48,7 @@ header {
   flex-shrink: 0;
   flex-basis: 300px;
   border-right: var(--red) 1px solid;
-  border-image: linear-gradient(to bottom, var(--midnight) 0%, var(--orange) 33%, var(--red) 66%, var(--midnight) 100%);
+  border-image: linear-gradient(to bottom, var(--midnight) 0%, var(--red) 33%, var(--orange) 66%, var(--midnight) 100%);
   border-image-slice: 1;
   color: var(--gray);
 }
