@@ -3,6 +3,7 @@ import './reset.css';
 import './App.css';
 import './msg.css'
 import scrollDown from "./images/down.svg"
+import reload_icon from "./images/refresh.svg"
 import noimage from './images/user_icon.png'
 import Messages from './Messages';
 import InputArea from './InputArea';
@@ -43,14 +44,14 @@ function App() {
       behavior: 'smooth'
     });
   }
-  var observer = new MutationObserver(()=>{scrollToEnd()})
-  const chat = document.getElementById("chat_area")
-  const config = {
-    childList: true,
-  }
-  if (chat != null) {
-    observer.observe(chat, config);
-  }
+  // var observer = new MutationObserver(()=>{scrollToEnd()})
+  // const chat = document.getElementById("chat_area")
+  // const config = {
+  //   childList: true,
+  // }
+  // if (chat != null) {
+  //   observer.observe(chat, config);
+  // }
   const handleIsEdit = (id: string, content: string) => {
     setEditMsgId(id);
     setContent(content);
@@ -69,7 +70,6 @@ function App() {
         }
         const message = await res.json();
         setMessage(message);
-        scrollToEnd();
       } catch (err) {
         console.error(err);
       }
@@ -92,6 +92,7 @@ function App() {
           throw Error(`Failed to send message: ${formInfo.status}`);
         }
         fetchMessages();
+        
       } catch (err) {
         console.error(err);
       }
@@ -161,6 +162,12 @@ function App() {
         <p>hello from side bar</p>
         <img
           src={scrollDown}
+          className='btn scroll_btn'
+          alt="最新の投稿へ"
+          onClick={scrollToEnd}
+          title='最新の投稿へ'/>
+        <img
+          src={reload_icon}
           className='btn scroll_btn'
           alt="最新の投稿へ"
           onClick={scrollToEnd}
